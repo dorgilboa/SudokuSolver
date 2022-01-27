@@ -1,0 +1,7 @@
+C:\Users\dorgi\Documents\אומגה יג' 2022\omegad\SudokuSolver\SudokuSolver\obj\Debug\SudokuSolver.csprojAssemblyReference.cache
+C:\Users\dorgi\Documents\אומגה יג' 2022\omegad\SudokuSolver\SudokuSolver\obj\Debug\SudokuSolver.csproj.CoreCompileInputs.cache
+C:\Users\dorgi\Documents\אומגה יג' 2022\omegad\SudokuSolver\SudokuSolver\bin\Debug\SudokuSolver.exe.config
+C:\Users\dorgi\Documents\אומגה יג' 2022\omegad\SudokuSolver\SudokuSolver\bin\Debug\SudokuSolver.exe
+C:\Users\dorgi\Documents\אומגה יג' 2022\omegad\SudokuSolver\SudokuSolver\bin\Debug\SudokuSolver.pdb
+C:\Users\dorgi\Documents\אומגה יג' 2022\omegad\SudokuSolver\SudokuSolver\obj\Debug\SudokuSolver.exe
+C:\Users\dorgi\Documents\אומגה יג' 2022\omegad\SudokuSolver\SudokuSolver\obj\Debug\SudokuSolver.pdb
