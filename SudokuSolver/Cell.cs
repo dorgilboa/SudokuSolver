@@ -39,6 +39,21 @@ namespace SudokuSolver
             return "index:" +row+ "," + col + "\noptions: " + str;
         }
 
+        public override bool Equals(object obj)
+        {
+            Cell temp;
+            if (obj == null)
+                return false;
+            if (obj == this)
+                return true;
+            if (obj.GetType() == this.GetType())
+            {
+                temp = (Cell)obj;
+                return this.row == temp.row && this.col == temp.col && this.box == temp.box;
+            }
+            return false;
+        }
+
 
     }
 }
