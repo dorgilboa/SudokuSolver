@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SudokuSolver
+namespace SudokuSolver 
 {
     enum AreaType { Row, Col, Box }
-    class Grid
+    class Grid : ICloneable
     {
         private readonly int n;
         private readonly int sqrtn;
+        private readonly string data;
         public int[,] grid { get; set; }
         public int this[int i, int j]
         {
@@ -32,15 +33,13 @@ namespace SudokuSolver
         {
             n = data.Length;
             sqrtn = (int)Math.Sqrt(n);
+            this.data = data;
             grid = new int[sqrtn, sqrtn];
             for (int i = 0; i < sqrtn; i++)
             {
                 for (int j = 0; j < sqrtn; j++)
                 {
-                    if (data[i * sqrtn + j] == ' ')
-                        grid[i, j] = 0;
-                    else
-                        grid[i, j] = data[i * sqrtn + j] - '0';
+                    grid[i, j] = data[i * sqrtn + j] - '0';
                 }
             }
             _emptyCells = new List<Cell>();
@@ -154,7 +153,10 @@ namespace SudokuSolver
                     str += "\n|___|___|___|___|___|___|___|___|___|\n|   |   |   |   |   |   |   |   |   |\n";
                 for (int j = 0; j < sqrtn; j++)
                 {
-                    str += "| " + grid[i, j] + " ";
+                    if (grid[i,j] != 0)
+                        str += "| " + grid[i, j] + " ";
+                    if (grid[i, j] == 0)
+                        str += "|   ";
                     if (j == sqrtn - 1)
                         str += "|";
                 }
@@ -162,6 +164,11 @@ namespace SudokuSolver
                     str += "\n|___|___|___|___|___|___|___|___|___|";
             }
             return str;
+        }
+
+        public object Clone()
+        {
+            return new Grid(this.data);
         }
     }
 }

@@ -9,8 +9,6 @@ namespace SudokuSolver
 {
     static class Solver
     {
-        private static int[,] INDIECES_TEMPLATE = { { 0, 0 }, { 0, 1 }, { 0, 2 }, { 1, 0 }, { 1, 1 }, { 1, 2 }, { 2, 0 }, { 2, 1 }, { 2, 2 } };
-
         public static void InsertCellToGrid(Grid grid, Cell cell)
         {
             int number = (int)cell.options[0];
@@ -28,8 +26,9 @@ namespace SudokuSolver
         }
 
 
-        public static void FindHiddenSingles(Grid grid)
+        public static void ReduceOptions(Grid grid)
         {
+            //HiddenPair(grid, grid.GetSqrtN());
             HiddenSingle1(grid, grid.GetSqrtN());
         }
 
@@ -91,9 +90,14 @@ namespace SudokuSolver
         }
 
 
-        private static void HiddenPair(Grid g)
+        private static void HiddenPair(Grid g, int sqrtn)
         {
-
+            for (int i = 0; i < sqrtn; i++)
+            {
+                FindHiddenPair(g, i, AreaType.Row);
+                FindHiddenPair(g, i, AreaType.Col);
+                FindHiddenPair(g, i, AreaType.Box);
+            }
         }
 
 
@@ -102,35 +106,94 @@ namespace SudokuSolver
             ArrayList options = null;
             List<Cell> emptycells = null;
             RetrieveOptionsAndEmptyCells(g, index, type, ref options, ref emptycells);
-            for (int k = 0; k < emptycells.Capacity-1; k++)
+            for (int i = 0; i < options.Count; i++)
             {
-                Cell c1 = emptycells[k], c2 = emptycells[k + 1];
-                for (int i = 0; i < c1.options.Capacity; i++)
+                for (int j = 0; j < options.Count; j++)
                 {
-                    for (int j = i + 1; j < c1.options.Capacity; j++)
+                    int cntr = 0;
+                    Cell found_cell_one = null;
+                    Cell found_cell_two = null;
+                    if (i != j)
                     {
+                        foreach (Cell c in emptycells)
+                        {
+                            if (c.options.Contains(options[i]) && c.options.Contains(options[j]))
+                            {
+                                cntr++;
+                                if (cntr-1 == 0)
+                                    found_cell_one = c;
+                                else
+                                    found_cell_two = c;
+                            }
 
+                        }
+                        if (cntr == 2 && found_cell_one != null && found_cell_two != null)
+                        {
+                            found_cell_one.options = new ArrayList();
+                            found_cell_one.options.Add(options[i]);
+                            found_cell_one.options.Add(options[j]);
+                            found_cell_two.options = new ArrayList();
+                            found_cell_two.options.Add(options[i]);
+                            found_cell_two.options.Add(options[j]);
+                        }
                     }
                 }
             }
         }
 
 
-        private static void HiddenSingle2(Grid g)
+        public static bool GishushNasog(Grid g)
         {
-            
+            ArrayList firstCellOptions = g.GetEmptyCells()[0].options;
+            if (firstCellOptions.Count == 0)
+                return false;
+            else
+            {
+                bool succeded = SolveSoduko(g);
+                if (succeded)
+                    return true;
+            }
+            return false;
         }
 
 
-
-
-        private static void FindHiddenSingle2(Grid g, int index, AreaType type)
+        public static bool SolveSoduko(Grid g)
         {
-            ArrayList options = null;
-            List<Cell> emptycells = null;
-            RetrieveOptionsAndEmptyCells(g, index, type, ref options, ref emptycells);
-            
+            List<Cell> temp = g.GetEmptyCells();
+            g.SortOptions();
+            while (temp.Count() > 0)
+            {
+                if (temp[0] != null && temp[0].options.Count == 1)
+                {
+                    while (temp[0] != null && temp[0].options.Count == 1)
+                        InsertCellToGrid(g, temp[0]);
+                }
+                else
+                    ReduceOptions(g);
+                g.SortOptions();
+                if (temp[0].options.Count == 0)
+                    return false;
+
+                Console.WriteLine(g.ToString());
+                // 2 חיפושים
+                // מיון מחדש לפי מספר אופציות
+                // אם אין אף אחד עם אופציה אחת, הצבה מאלה עם 2 אופציות, בקריאה ברקוסיה לפונציה הזאת.
+            }
+            return true;
         }
+
+
+        //private static void hiddensingle2(grid g)
+        //{
+
+        //}
+        //private static void FindHiddenSingle2(Grid g, int index, AreaType type)
+        //{
+        //    ArrayList options = null;
+        //    List<Cell> emptycells = null;
+        //    RetrieveOptionsAndEmptyCells(g, index, type, ref options, ref emptycells);
+            
+        //}
 
     }
 }
