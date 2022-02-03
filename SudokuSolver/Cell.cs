@@ -31,7 +31,7 @@ namespace SudokuSolver
             this.row = c.row;
             this.col = c.col;
             this.box = c.box;
-            this.options = new ArrayList((ArrayList)c.options.Clone());
+            this.options = new ArrayList(/*(ArrayList)*/c.options/*.Clone()*/);
         }
 
         public int CompareTo(object obj)
