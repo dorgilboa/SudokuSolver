@@ -30,8 +30,8 @@ namespace SudokuSolver
 
         public static void ReduceOptions(Grid grid)
         {
-            NakedPair(grid, grid.sqrtn);
-            HiddenPair(grid, grid.sqrtn);
+            //NakedPair(grid, grid.sqrtn);
+            //HiddenPair(grid, grid.sqrtn);
             HiddenSingle(grid, grid.sqrtn);
         }
 
@@ -244,7 +244,7 @@ namespace SudokuSolver
                         Grid dup = new Grid(g);
                         Cell firstemptycell = dup.GetEmptyCells()[0];
                         ArrayList options = firstemptycell.options;
-                        while (options.Count > 0 && !succeeded)
+                        while (options.Count > 1 && !succeeded)
                         {
                             //Console.WriteLine(firstemptycell);
                             //Console.Clear();
@@ -265,7 +265,10 @@ namespace SudokuSolver
                             emptycells = g.GetEmptyCells();
                         }
                         else
-                            return false;
+                        {
+                            g.GetEmptyCells()[0] = firstemptycell;
+                            InsertCellToGrid(g, g.GetEmptyCells()[0]);
+                        }
                     }
                 }
                 if (emptycells.Count > 0 && emptycells[0].options.Count == 1)
@@ -276,54 +279,5 @@ namespace SudokuSolver
                     return GishushNasog(ref g);
             }
         }
-
-
-
-        //public static bool GishushNasogDeme(Grid g)
-        //{
-        //    List<Cell> temp = g.GetEmptyCells();
-        //    g.SortOptions();
-        //    while (temp.Count > 0)
-        //    {
-        //        if (temp[0] != null && temp[0].options.Count == 1)
-        //        {
-        //            while (temp.Count > 0 && temp[0].options.Count == 1)
-        //                InsertCellToGrid(g, temp[0]);
-        //        }
-        //        else
-        //            ReduceOptions(g);
-        //        g.SortOptions();
-        //        if (temp.Count > 0 && temp[0].options.Count == 0)
-        //            return false;
-
-        //        if (temp.Count > 0 && temp[0].options.Count > 1)
-        //        {
-        //            bool succeeded = false;
-        //            Grid dup = new Grid(g);
-        //            Cell firstemptycell = dup.GetEmptyCells()[0];
-        //            ArrayList options = firstemptycell.options;
-        //            while (options.Count > 0 && !succeeded)
-        //            {
-        //                InsertCellToGrid(dup, firstemptycell);
-        //                succeeded = GishushNasog(ref dup);
-        //                if (!succeeded)
-        //                {
-        //                    if (options.Count == 0)
-        //                        return false;
-        //                    options.RemoveAt(0);
-        //                }
-        //            }
-        //            if (!succeeded)
-        //                return false;
-        //            else
-        //                g = dup;
-        //        }
-        //        Console.WriteLine(g.ToString());
-        //        // 2 חיפושים
-        //        // מיון מחדש לפי מספר אופציות
-        //        // אם אין אף אחד עם אופציה אחת, הצבה מאלה עם 2 אופציות, בקריאה ברקוסיה לפונציה הזאת.
-        //    }
-        //    return true;
-        //}
     }
 }
