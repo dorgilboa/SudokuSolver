@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows.Input;
 
 
 namespace SudokuSolver
@@ -13,7 +13,8 @@ namespace SudokuSolver
         public override void SetStartData()
         {
             Console.WriteLine("\nEnter the FILE PATH Sudoku board DOWN HERE");
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            
+            //OpenFileDialog openFileDialog = new OpenFileDialog();
 
         }
     }
