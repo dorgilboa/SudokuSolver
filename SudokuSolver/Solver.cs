@@ -30,22 +30,23 @@ namespace SudokuSolver
 
         public static void ReduceOptions(Grid grid)
         {
+            NakedPair(grid, grid.sqrtn);
             HiddenPair(grid, grid.sqrtn);
-            HiddenSingle1(grid, grid.sqrtn);
+            HiddenSingle(grid, grid.sqrtn);
         }
 
 
-        public static void HiddenSingle1(Grid g, int sqrtn)
+        public static void HiddenSingle(Grid g, int sqrtn)
         {
             for (int i = 0; i < sqrtn; i++)
             {
-                FindHiddenSingle1(g, i, AreaType.Row);
-                FindHiddenSingle1(g, i, AreaType.Col);
-                FindHiddenSingle1(g, i, AreaType.Box);
+                FindHiddenSingle(g, i, AreaType.Row);
+                FindHiddenSingle(g, i, AreaType.Col);
+                FindHiddenSingle(g, i, AreaType.Box);
             }
         }
 
-        private static void FindHiddenSingle1(Grid g, int index, AreaType type)
+        private static void FindHiddenSingle(Grid g, int index, AreaType type)
         {
             ArrayList options = null;
             List<Cell> emptycells = null;
@@ -103,6 +104,17 @@ namespace SudokuSolver
         }
 
 
+        private static void NakedPair(Grid g, int sqrtn)
+        {
+            for (int i = 0; i < sqrtn; i++)
+            {
+                FindNakedPair(g, i, AreaType.Row);
+                FindNakedPair(g, i, AreaType.Col);
+                FindNakedPair(g, i, AreaType.Box);
+            }
+        }
+
+
         private static void FindHiddenPair(Grid g, int index, AreaType type)
         {
             ArrayList options = null;
@@ -145,7 +157,46 @@ namespace SudokuSolver
             }
         }
 
-        public static void NakedSingle(Grid g)
+
+
+        private static void FindNakedPair(Grid g, int index, AreaType type)
+        {
+            ArrayList options = null;
+            List<Cell> emptycells = null;
+            RetrieveOptionsAndEmptyCells(g, index, type, ref options, ref emptycells);
+            for (int i = 0; i < options.Count; i++)
+            {
+                for (int j = 0; j < options.Count; j++)
+                {
+                    int cntr_pairs = 0, cntr_pairs_only = 0;
+                    List<Cell> naked_cells = new List<Cell>();
+                    if (i != j)
+                    {
+                        foreach (Cell c in emptycells)
+                        {
+                            if (c.options.Contains(options[i]) && c.options.Contains(options[j]))
+                            {
+                                cntr_pairs++;
+                                naked_cells.Add(c);
+                                if (c.options.Count == 2)
+                                    cntr_pairs_only++;
+                            }
+                        }
+                        if (cntr_pairs_only == 2)
+                        {
+                            foreach (Cell c in naked_cells)
+                                if (c.options.Count != 2)
+                                { c.options.Remove(options[i]); c.options.Remove(options[j]); }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+            public static void NakedSingle(Grid g)
         {
             List<Cell> emptycells = g.GetEmptyCells();
             while (emptycells.Count > 0 && emptycells[0].options.Count == 1)
@@ -182,36 +233,40 @@ namespace SudokuSolver
             }
             else
             {
-                ReduceOptions(g);
-                g.SortOptions();
                 if (emptycells.Count > 0 && emptycells[0].options.Count > 1)
                 {
-                    bool succeeded = false;
-                    Grid dup = new Grid(g);
-                    Cell firstemptycell = dup.GetEmptyCells()[0];
-                    ArrayList options = firstemptycell.options;
-                    while (options.Count > 0 && !succeeded)
+                    ReduceOptions(g);
+                    g.SortOptions();
+
+                    if (emptycells.Count > 0 && emptycells[0].options.Count > 1)
                     {
-                        //Console.WriteLine(firstemptycell);
-                        //Console.Clear();
-                        //Console.WriteLine(g);
-                        InsertCellToGrid(dup, firstemptycell);
-                        succeeded = GishushNasog(ref dup);
-                        if (!succeeded && options.Count > 0)
+                        bool succeeded = false;
+                        Grid dup = new Grid(g);
+                        Cell firstemptycell = dup.GetEmptyCells()[0];
+                        ArrayList options = firstemptycell.options;
+                        while (options.Count > 0 && !succeeded)
                         {
-                            dup = new Grid(g);
-                            firstemptycell = dup.GetEmptyCells()[0];
-                            options = firstemptycell.options;
-                            options.RemoveAt(0);
+                            //Console.WriteLine(firstemptycell);
+                            //Console.Clear();
+                            //Console.WriteLine(g);
+                            InsertCellToGrid(dup, firstemptycell);
+                            succeeded = GishushNasog(ref dup);
+                            if (!succeeded && options.Count > 0)
+                            {
+                                dup = new Grid(g);
+                                firstemptycell = dup.GetEmptyCells()[0];
+                                options = firstemptycell.options;
+                                options.RemoveAt(0);
+                            }
                         }
+                        if (succeeded)
+                        {
+                            g = dup;
+                            emptycells = g.GetEmptyCells();
+                        }
+                        else
+                            return false;
                     }
-                    if (succeeded)
-                    {
-                        g = dup;
-                        emptycells = g.GetEmptyCells();
-                    }
-                    else
-                        return false;
                 }
                 if (emptycells.Count > 0 && emptycells[0].options.Count == 1)
                     NakedSingle(g);

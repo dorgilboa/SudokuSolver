@@ -37,11 +37,12 @@ namespace SudokuSolver
         public int CompareTo(object obj)
         {
             Cell temp = (Cell)obj;
-            if (this.options.Count != temp.options.Count)
-                return this.options.Count - temp.options.Count;
-            else if (this.row != temp.row)
-                return this.row - temp.row;
-            return this.col - temp.col;
+            //if (this.options.Count != temp.options.Count)
+            //    return this.options.Count - temp.options.Count;
+            //else if (this.row != temp.row)
+            //    return this.row - temp.row;
+            //return this.col - temp.col;
+            return this.options.Count - temp.options.Count;
         }
 
         public override string ToString()

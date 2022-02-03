@@ -69,24 +69,6 @@ namespace SudokuSolver
                 this._emptyBoxes.AddCellToIndex(dup_cell.box, dup_cell);
             }
             this.SortOptions();
-
-
-            //this._emptyRows = new EmptyCellsArray(g._emptyRows);
-            //this._emptyCols = new EmptyCellsArray(g._emptyCols);
-            //this._emptyBoxes = new EmptyCellsArray(g._emptyBoxes);
-            //for (int i = 0; i < sqrtn; i++)
-            //{
-            //    foreach (Cell c in this._emptyRows.GetCells()[i])
-            //        if (!this._emptyCells.Contains(c))
-            //            this._emptyCells.Add(c);
-            //    foreach (Cell c in this._emptyCols.GetCells()[i])
-            //        if (!this._emptyCells.Contains(c))
-            //            this._emptyCells.Add(c);
-            //    foreach (Cell c in this._emptyBoxes.GetCells()[i])
-            //        if (!this._emptyCells.Contains(c))
-            //            this._emptyCells.Add(c);
-            //}
-            //this.SortOptions();
         }
 
         public EmptyCellsArray GetEmptyRows()
@@ -104,20 +86,6 @@ namespace SudokuSolver
             return _emptyCells;
         }
 
-        //public List<Cell> GetEmptyRowList(int row)
-        //{
-        //    return _emptyRows.GetCells()[row];
-        //}
-
-        //public List<Cell> GetEmptyColList(int col)
-        //{
-        //    return _emptyCols.GetCells()[col];
-        //}
-
-        //public List<Cell> GetEmptyBoxList(int box)
-        //{
-        //    return _emptyBoxes.GetCells()[box];
-        //}
 
         public void DeleteEmptyCell(Cell c)
         {
