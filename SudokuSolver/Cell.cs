@@ -25,10 +25,23 @@ namespace SudokuSolver
                 options.Add(i + 1);
         }
 
+        //Copy Constractor:
+        public Cell(Cell c)
+        {
+            this.row = c.row;
+            this.col = c.col;
+            this.box = c.box;
+            this.options = new ArrayList((ArrayList)c.options.Clone());
+        }
+
         public int CompareTo(object obj)
         {
             Cell temp = (Cell)obj;
-            return this.options.Count - temp.options.Count;
+            if (this.options.Count != temp.options.Count)
+                return this.options.Count - temp.options.Count;
+            else if (this.row != temp.row)
+                return this.row - temp.row;
+            return this.col - temp.col;
         }
 
         public override string ToString()
@@ -53,7 +66,5 @@ namespace SudokuSolver
             }
             return false;
         }
-
-
     }
 }

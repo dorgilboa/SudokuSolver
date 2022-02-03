@@ -24,11 +24,24 @@ namespace SudokuSolver
             {
                 _optionsPerArea[i] = new ArrayList();
                 for (int j = 0; j < size; j++)
-                {
                     _optionsPerArea[i].Add(j + 1);
-                }
             }
         }
+
+        public EmptyCellsArray(EmptyCellsArray eca)
+        {
+            this.size = eca.size;
+            this._cells = new List<Cell>[this.size];
+            this._optionsPerArea = new ArrayList[this.size];
+            for (int i = 0; i < this.size; i++)
+            {
+                this._cells[i] = new List<Cell>();
+                this._optionsPerArea[i] = new ArrayList();
+                foreach (int opt in eca._optionsPerArea[i])
+                    this._optionsPerArea[i].Add(opt);
+            }
+        }
+
 
         public List<Cell>[] GetCells()
         {
@@ -40,13 +53,18 @@ namespace SudokuSolver
             _cells[index].Add(c);
         }
 
+        public void DeleteCellFromIndex(int index, Cell c)
+        {
+            _cells[index].Remove(c);
+        }
+
         public void SetOptionsOnIndex(int index, Grid g, AreaType type)
         {
             switch (type)
             {
-                case AreaType.Row: _optionsPerArea[index] = g.GetRowMissing(index, _optionsPerArea[index]); break;
-                case AreaType.Col: _optionsPerArea[index] = g.GetColMissing(index, _optionsPerArea[index]); break;
-                case AreaType.Box: _optionsPerArea[index] = g.GetBoxMissing(index, _optionsPerArea[index]); break;
+                case AreaType.Row: /* _optionsPerArea[index] = */ g.GetRowMissing(index, _optionsPerArea[index]); break;
+                case AreaType.Col: /* _optionsPerArea[index] = */ g.GetColMissing(index, _optionsPerArea[index]); break;
+                case AreaType.Box: /* _optionsPerArea[index] = */ g.GetBoxMissing(index, _optionsPerArea[index]); break;
                 default: break;
             }
         }

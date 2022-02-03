@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Cell.cs" />
     <Compile Include="EmptyCellsArray.cs" />
+    <Compile Include="FileOutputService.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
