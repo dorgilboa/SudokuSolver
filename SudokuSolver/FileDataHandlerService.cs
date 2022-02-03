@@ -14,7 +14,7 @@ namespace SudokuSolver
         {
             Console.WriteLine("\nEnter the FILE PATH Sudoku board DOWN HERE");
             
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            //OpenFileDialog openFileDialog = new OpenFileDialog();
 
         }
     }
