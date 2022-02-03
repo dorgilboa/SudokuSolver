@@ -189,55 +189,77 @@ namespace SudokuSolver
 
         public override string ToString()
         {
-            string[] strTemplate = BuildTemplateGridShow(sqrtn);
-            //string str = "\n ___ ___ ___ ___ ___ ___ ___ ___ ___ \n|   |   |   |   |   |   |   |   |   |\n";
+            int sqrtsqrtn = (int)Math.Sqrt(sqrtn);
+            string[] strTemplate = BuildTemplateGridShow(sqrtn, sqrtsqrtn);
             string str = "";
             str += strTemplate[0] + strTemplate[2];
             for (int i = 0; i < sqrtn; i++)
             {
                 if (i != 0)
-                    str += strTemplate[1] + strTemplate[2];//str += "\n|___|___|___|___|___|___|___|___|___|\n|   |   |   |   |   |   |   |   |   |\n";
+                {
+                    if (i % sqrtsqrtn == 0)
+                    {
+                        str += strTemplate[4] + strTemplate[2];
+                    }
+                    else
+                        str += strTemplate[1] + strTemplate[2];
+                }
                 for (int j = 0; j < sqrtn; j++)
                 {
                     string num = String.Format("{0:00}", grid[i, j]);
-                    if (grid[i,j] != 0)
-                        str += "| " + num + " ";
-                    if (grid[i, j] == 0)
-                        str += "|    ";
-                    if (j == sqrtn - 1)
-                        str += "|";
+                    if (j % sqrtsqrtn == 0)
+                    {
+                        if (grid[i, j] != 0)
+                            str += "║ " + num + " ";
+                        if (grid[i, j] == 0)
+                            str += "║    ";
+                        if (j == sqrtn - 1)
+                            str += "║";
+                    }
+                    else
+                    {
+                        if (grid[i, j] != 0)
+                            str += "│ " + num + " ";
+                        if (grid[i, j] == 0)
+                            str += "│    ";
+                        if (j == sqrtn - 1)
+                            str += "║";
+                    }
                 }
                 if (i == sqrtn - 1)
-                    str += strTemplate[3];//str += "\n|___|___|___|___|___|___|___|___|___|";
+                    str += strTemplate[3];
             }
             return str;
         }
 
-        private string[] BuildTemplateGridShow(int sqrtn)
+        private string[] BuildTemplateGridShow(int sqrtn, int sqrtsqrtn)
         {
-            int sqrtsqrtn = (int)Math.Sqrt(sqrtn);
-            string[] strings = { "\n", "\n", "\n", "\n"hj };
+            string[] strings = { "\n", "\n", "\n", "\n", "\n" };
             for (int i = 0; i < sqrtn; i++)
             {
                 char ch = '║';
-                if ((i) % sqrtsqrtn == 0)
+                if (i % sqrtsqrtn == 0)
                 {
                     strings[0] += "╦════";
                     strings[3] += "╩════";
-                    //strings[1] += ch + "════";
+                    strings[1] += "║────";
+                    strings[2] += "║    ";
+                    strings[4] += "╬════";
                 }
                 else
                 {
                     strings[0] += "═════";
                     strings[3] += "═════";
+                    strings[1] += "│────";
+                    strings[2] += "│    ";
+                    strings[4] += "═════";
                 }
-                strings[1] += ch + "────";
-                strings[2] += ch + "    ";
             }
             strings[0] += "╦";
-            strings[1] += "|";
-            strings[2] += "|\n";
+            strings[1] += "║";
+            strings[2] += "║\n";
             strings[3] += "╩";
+            strings[4] += "╬";
             return strings;
         }
     }

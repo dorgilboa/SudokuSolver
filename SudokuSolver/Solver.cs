@@ -160,7 +160,6 @@ namespace SudokuSolver
             watch.Start();
             ArrayList firstCellOptions = g.GetEmptyCells()[0].options;
             cntr = 0;
-            //Console.WriteLine(g);
             Console.WriteLine(GishushNasog(ref g));
             watch.Stop();
             Console.WriteLine($"Execution Time: {(double)watch.ElapsedMilliseconds / 1000} secs");
