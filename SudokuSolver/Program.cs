@@ -9,15 +9,50 @@ namespace SudokuSolver
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
+            double time;
+            bool end = false;
+            string user_request;
+            DataHandlerService dhs = null;
+            Grid grid;
+            Console.WriteLine("WELCOME TO SUDOKU SOLVER");
+            do
+            {
+                Console.WriteLine("\nMENU:\nc - Get Sudoku board from Console input.\nf - Get Sudoku board from '.txt' file and write the solution to it.\ne - Exit.");
+                user_request = Console.ReadLine();
+                switch (user_request)
+                {
+                    case "f": dhs = new FileDataHandlerService(); break;
+                    case "c": dhs = new ConsoleDataHandlerService(); break;
+                    case "e": end = true; break;
+                    default: dhs = null; Console.WriteLine("Wrong Request Input"); break;
+                }
+                if (dhs != null && dhs.start != null && dhs.IsLengthValid())
+                {
+                    grid = new Grid(dhs.start);
+                    if (dhs.IsDataValid(grid))
+                    {
+                        time = Solver.Solve(ref grid);
+                        Console.WriteLine(dhs.IsDataValid(grid));
+                        dhs.PassResult(grid, time);
+                    }
+                }
+            } while (!end);
+            Console.WriteLine("END OF PROCCESS (SUCCESSFULLY)");
+
+
+
+
+
             //empty:
             //Grid f = new Grid("0");
             //Grid f = new Grid("0000000000000000");
             //Grid f = new Grid("000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 
             // 9 on 9s:
-            Grid f = new Grid("008062000030840902906000014012008600300079020060100037001780300685200740400096001"); // working 0.012 secs
+            //Grid f = new Grid("008062000030840902906000014012008600300079020060100037001780300685200740400096001"); // working 0.012 secs
             //Grid meow = new Grid("060001000914083006083007000000004075000000460049700000000009000300010540600000120"); // working
             //Grid f = new Grid("006000007970000040520000800000700500400003170050008006000301002000805000603902000"); // working 0.02 secs
             //Grid f = new Grid("002000000000000000000008000050001406000000170601000090000000000000009000003600000"); //working
@@ -40,18 +75,18 @@ namespace SudokuSolver
 
 
             // 25 on 25s:
-            string twentyfive = "";
-            for (int i = 0; i < 625; i++)
-            {
-                //if (i == 1)
-                //    twentyfive += ";";
-                twentyfive += "0";
-            }
+            //string twentyfive = "";
+            //for (int i = 0; i < 625; i++)
+            //{
+            //    //if (i == 1)
+            //    //    twentyfive += ";";
+            //    twentyfive += "0";
+            //}
             //Grid f = new Grid("00<60070B05H0:1004000000020C0=000:00000000B50000010000000F000030200><0@8I000@0002G00=<F000E?C30000>0G0H00000I840@CE0070003<0904020000000:0H<A@00050000009006I0008053000000D00BC?0:;000B<C0000000G00700400000000>0F00B@D06;=0000000F0I001A54700>083E00;00060D=?00000090020I0180050E0010000@:07004D00900>0H0A0I2500000=00000F00000C1800007E00<02A000B6@00?00=0:08:B<@900050000C00A0E0?00F0800?03060E0070B>50100000000C010@;000:FI?000000E000310E004000020=0HI00>00600000000?0<>06AH0000000=0005G@40=H720900?30F000000800ID20C000010000E300<0000@<050;E0G00?0000C900000I:00009DF74030>IB0;0000010?H060F80I>0:;090D1@070G00=>=E100500060F0G:000200B7;");
             //Grid f = new Grid("000000;H0004090000:I000F001000A060000H@030G00><0000005:200000B0?D0;H00000900000900<5:000CF0060D00H@0000H@80009I0<0:2170FA00000000000;0@030G900050200CF0210C0A00?00;00030000><0::000002100D000?=000@804G00030000>00000000AB0?000H@00E0H0000G:0>05F0000DAB600DAB60=0009804000>050010000000?0AB0@0000900000I000500><0020000AB60000008340G900050000C02100D000@0E00000E;0003400I00C0007?DAB66000B000E;098000:0000F007000010?000H@=E0G080400I00<00I0000216000BH000;000044G000<000000020000AB0@=00000004000005:I>7CF000?00BB0?000H0=E0G900<0:I00C0001000206?DA000=04098300;0>0000000C00B0?00;H0000000004098005:007000000D00H@000;H0000000000:I00CF0B0?0A");
             //Grid f = new Grid(twentyfive);
             //Grid f = new Grid(sixteen);
-            Solver.SolveSoduko(f);
+            //Solver.Solve(f);
 
 
         }

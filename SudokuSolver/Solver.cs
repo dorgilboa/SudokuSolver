@@ -9,8 +9,7 @@ namespace SudokuSolver
 {
     static class Solver
     {
-        public static int cntr;
-
+        //public static int cntr;
         public static void InsertCellToGrid(Grid grid, Cell cell)
         {
             int number = (int)cell.options[0];
@@ -205,19 +204,16 @@ namespace SudokuSolver
         }
 
 
-        public static void SolveSoduko(Grid g)
+        public static double Solve(ref Grid g)
         {
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
-            ArrayList firstCellOptions = g.GetEmptyCells()[0].options;
-            cntr = 0;
-            Console.WriteLine(GishushNasog(ref g));
+            GishushNasog(ref g);
             watch.Stop();
-            Console.WriteLine($"Execution Time: {(double)watch.ElapsedMilliseconds / 1000} secs");
-            Console.WriteLine(g);
+            return (double)watch.ElapsedMilliseconds / 1000;
+            //Console.WriteLine($"Execution Time: {(double)watch.ElapsedMilliseconds / 1000} secs");
+            //Console.WriteLine(g);
         }
-
-
 
 
 

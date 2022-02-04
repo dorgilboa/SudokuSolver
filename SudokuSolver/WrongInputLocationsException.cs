@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver
 {
-    class WrongInputLocationsException : ValidationException
+    class WrongInputLocationsException : WrongInputExceptions
     {
-        public WrongInputLocationsException() : base("Wrong Cell in an Unknown Row / Col / Box.")
+        public WrongInputLocationsException() : base("Input's Location Exception: Two or more Cells CONTAIN THE SAME NUMBER in an Unknown Row / Col / Box.")
         {
         }
 
