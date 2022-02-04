@@ -24,6 +24,7 @@ namespace SudokuSolver
             try
             {
                 start = Read();
+                Console.WriteLine(start);
             } catch (WrongInputExceptions wie)
             {
                 Console.WriteLine(wie.Message);

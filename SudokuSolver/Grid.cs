@@ -71,6 +71,24 @@ namespace SudokuSolver
             this.SortOptions();
         }
 
+        //public Cell GetFirstCell(List<Cell> emptycells)
+        //{
+        //    int min = sqrtn + 1;
+        //    Cell minCell = _emptyCells[0];
+        //    foreach (Cell cell in _emptyCells)
+        //    {
+        //        if (cell.options.Count == 1)
+        //            return cell;
+        //        if (cell.options.Count < min)
+        //        {
+        //            min = cell.options.Count;
+        //            minCell = cell;
+        //        }
+        //    }
+        //    return minCell;
+        //}
+
+
         public EmptyCellsArray GetEmptyRows()
         { return _emptyRows; }
 
