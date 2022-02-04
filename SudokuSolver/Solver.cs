@@ -9,29 +9,29 @@ namespace SudokuSolver
 {
     static class Solver
     {
-        //public static int cntr;
         public static void InsertCellToGrid(Grid grid, Cell cell)
         {
             int number = (int)cell.options[0];
             grid[cell.row, cell.col] = number;
             foreach (Cell c in grid.GetEmptyRows().GetCells()[cell.row])
                 c.options.Remove(number);
-            grid.GetEmptyRows().SetOptionsOnIndex(cell.row, grid, AreaType.Row);
+            grid.GetEmptyRows().GetOptionsPerArea(cell.row).Remove(number);
             foreach (Cell c in grid.GetEmptyCols().GetCells()[cell.col])
                 c.options.Remove(number);
-            grid.GetEmptyCols().SetOptionsOnIndex(cell.col, grid, AreaType.Col);
+            grid.GetEmptyCols().GetOptionsPerArea(cell.col).Remove(number);
             foreach (Cell c in grid.GetEmptyBoxes().GetCells()[cell.box])
                 c.options.Remove(number);
-            grid.GetEmptyBoxes().SetOptionsOnIndex(cell.box, grid, AreaType.Box);
+            grid.GetEmptyBoxes().GetOptionsPerArea(cell.box).Remove(number);
             grid.DeleteEmptyCell(cell);
         }
 
 
         public static void ReduceOptions(Grid grid)
         {
-            //NakedPair(grid, grid.sqrtn);
-            //HiddenPair(grid, grid.sqrtn);
             HiddenSingle(grid, grid.sqrtn);
+            Intersection(grid, grid.sqrtn);
+            NakedPair(grid, grid.sqrtn);
+            HiddenPair(grid, grid.sqrtn);
         }
 
 
@@ -52,15 +52,18 @@ namespace SudokuSolver
             RetrieveOptionsAndEmptyCells(g, index, type, ref options, ref emptycells);
             foreach (int opt in options)
             {
+                bool invalid = false;
                 int cntr = 0;
                 Cell found_cell = null;
-                foreach (Cell c in emptycells)
+                for (int i = 0; i < emptycells.Count && !invalid; i++)
                 {
-                    if (c.options.Contains(opt))
+                    if (emptycells[i].options.Contains(opt))
                     {
                         cntr++;
-                        found_cell = c;
+                        found_cell = emptycells[i];
                     }
+                    if (cntr > 1)
+                        invalid = true;
                 }
                 if (cntr == 1 && found_cell != null)
                 {
@@ -69,6 +72,60 @@ namespace SudokuSolver
                 }
             }
         }
+
+
+        private static void Intersection(Grid g, int sqrtn)
+        {
+            for (int i = 0; i < sqrtn; i++)
+            {
+                IntersectionByArea(g, i, AreaType.Row);
+                IntersectionByArea(g, i, AreaType.Col);
+            }
+        }
+
+
+        private static void IntersectionByArea(Grid g, int index, AreaType type)
+        {
+            ArrayList options = null;
+            List<Cell> emptycells = null;
+            RetrieveOptionsAndEmptyCells(g, index, AreaType.Box, ref options, ref emptycells);
+            foreach (int opt in options)
+            {
+                int cntr = 0, area_cntr = 0, prev_row = -1;
+                bool invalid = false;
+                for (int i = 0; i < emptycells.Count && !invalid; i++)
+                {
+                    if (emptycells[i].options.Contains(opt))
+                    {
+                        cntr++;
+                        switch (type)
+                        {
+                            case AreaType.Row:
+                                if (prev_row != emptycells[i].row)
+                                {
+                                    prev_row = emptycells[i].row;
+                                    area_cntr++;
+                                }
+                                break;
+                            case AreaType.Col:
+                                if (prev_row != emptycells[i].col)
+                                {
+                                    prev_row = emptycells[i].col;
+                                    area_cntr++;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    if (cntr > 3)
+                        invalid = true;
+                }
+                if (cntr > 1 && cntr <= 3 && area_cntr == 1)
+                    RemoveOptionsFromAreaWOBox(g, prev_row, index, type, opt);
+            }
+        }
+
 
         private static void RetrieveOptionsAndEmptyCells(Grid g, int index, AreaType type, ref ArrayList options, ref List<Cell> emptycells)
         {
@@ -89,6 +146,16 @@ namespace SudokuSolver
                 default:
                     break;
             }
+        }
+
+        private static void RemoveOptionsFromAreaWOBox(Grid g, int index, int box, AreaType type, int opt)
+        {
+            ArrayList options = null;
+            List<Cell> emptycells = null;
+            RetrieveOptionsAndEmptyCells(g, index, type, ref options, ref emptycells);
+            foreach (Cell cell in emptycells)
+                if (cell.box != box)
+                    cell.options.Remove(opt);
         }
 
 
@@ -212,7 +279,6 @@ namespace SudokuSolver
             watch.Stop();
             return (double)watch.ElapsedMilliseconds / 1000;
             //Console.WriteLine($"Execution Time: {(double)watch.ElapsedMilliseconds / 1000} secs");
-            //Console.WriteLine(g);
         }
 
 

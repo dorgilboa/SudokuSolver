@@ -29,7 +29,7 @@ namespace SudokuSolver
                     case "e": end = true; break;
                     default: dhs = null; Console.WriteLine("Wrong Request Input"); break;
                 }
-                if (dhs != null && dhs.start != null && dhs.IsLengthValid())
+                if (!end && dhs != null && dhs.start != null && dhs.IsLengthValid())
                 {
                     grid = new Grid(dhs.start);
                     if (dhs.IsDataValid(grid))
@@ -41,10 +41,6 @@ namespace SudokuSolver
                 }
             } while (!end);
             Console.WriteLine("END OF PROCCESS (SUCCESSFULLY)");
-
-
-
-
 
             //empty:
             //Grid f = new Grid("0");
