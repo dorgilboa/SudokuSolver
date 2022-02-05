@@ -8,12 +8,21 @@ using System.Threading.Tasks;
 namespace SudokuSolver
 {
     public class EmptyCellsArray
+        /*
+         * The class that sets for every area type the information so the access to the cells
+         * will be more efficient (just by indexing an area)...
+         * This type also arranges the options for each area by index.
+         */
     {
         public int size { get; set; }
         private List<Cell>[] _cells;
         private ArrayList[] _optionsPerArea;
 
         public EmptyCellsArray(int sqrtn)
+            /*
+             * Construcor by root of grid size. Initial empty new cell lists for each area type, and sets the options from
+             * 1 to the square root of the grid size.
+             */
         {
             size = sqrtn;
             _cells = new List<Cell>[size];
@@ -29,6 +38,10 @@ namespace SudokuSolver
         }
 
         public EmptyCellsArray(EmptyCellsArray eca)
+        /*
+         * Copy Construcor. Initial empty new cell lists for each area type, and copies the options from
+         * the given father object's options in each index of the area.
+         */
         {
             this.size = eca.size;
             this._cells = new List<Cell>[this.size];
@@ -59,6 +72,9 @@ namespace SudokuSolver
         }
 
         public void SetOptionsOnIndex(int index, Grid g, AreaType type)
+            /*
+             * This function init the options on the options lists by given area type and index on the grid.
+             */
         {
             switch (type)
             {
@@ -70,6 +86,9 @@ namespace SudokuSolver
         }
 
         public ArrayList GetOptionsPerArea(int index)
+            /*
+             * Retrieves all of the options from the given index.
+             */
         {
             return _optionsPerArea[index];
         }

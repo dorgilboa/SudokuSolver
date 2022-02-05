@@ -221,6 +221,11 @@ namespace SudokuSolver
 
 
         private static void FindHiddenPair(Grid g, int index, AreaType type)
+        /*
+         * Gets an index and area type in a grid (g), and checks for every pair of options
+         * whether it includes in only two empty-cells inside the area on the given
+         * index. If they are, it sets the pair of options as the only options in the matching cells.
+         */
         {
             ArrayList options = null;
             List<Cell> emptycells = null;
@@ -265,6 +270,12 @@ namespace SudokuSolver
 
 
         private static void FindNakedPair(Grid g, int index, AreaType type)
+        /*
+         * Gets an index and area type in a grid (g), and checks for every pair of options
+         * whether it includes in only two empty-cells inside the area on the given index,
+         * and also these cells don't contain any other option.
+         * If they are, it removes the pair of options from the other cells in the area.
+         */
         {
             ArrayList options = null;
             List<Cell> emptycells = null;
@@ -299,9 +310,12 @@ namespace SudokuSolver
         }
 
 
-
-
-            public static void NakedSingle(Grid g)
+        public static void NakedSingle(Grid g)
+            /*
+             * Calls to insertion fanction to the first empty-cells on the list, only if
+             * they have only one option left. Then it sorts the other empty-cells by amount
+             * of options becuase of changes that were caused when inserting a cell.
+             */
         {
             List<Cell> emptycells = g.GetEmptyCells();
             while (emptycells.Count > 0 && emptycells[0].options.Count == 1)
@@ -311,12 +325,15 @@ namespace SudokuSolver
 
 
         public static bool Solve(ref Grid g)
+            /*
+             * the main function that calls the whole solving-algorithem on the given board, and returns the final
+             * result of the calculations over the grid (if it was solveable or not) and changes the grid itself.
+             */
         {
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
             bool succeeded = GishushNasog(ref g);
             watch.Stop();
-            //return (double)watch.ElapsedMilliseconds / 1000;
             Console.WriteLine($"Execution Time: {(double)watch.ElapsedMilliseconds / 1000} secs");
             return succeeded;
         }
@@ -324,6 +341,16 @@ namespace SudokuSolver
 
 
         public static bool GishushNasog(ref Grid g)
+        /*
+         * the main recursive function that performs the back-tracking algo on the grid (g) by guessing options,
+         * only if it has no choice to. Otherwise it'll call all of the other option-reducers algos so the solving
+         * proccess will be optimised. it returns true if there are not empty-cells left, and false if the grid is
+         * unsolveable.
+         * endpoints - 
+         * if amount of empty-cells is 0 - true - the board is full.
+         * if the first empty-cell (ordered by amount of options) has 0 options - there is an error - an other option
+         * insertion had affected the other cells worngly and that situation is no longer solveable.
+         */
         {
             g.SortOptions();
             List<Cell> emptycells = g.GetEmptyCells();
@@ -373,8 +400,6 @@ namespace SudokuSolver
                     NakedSingle(g);
                 if (emptycells.Count == 0)
                     return true;
-                //else if (emptycells[0].options.Count == 0)
-                //    return false;
                 else
                     return GishushNasog(ref g);
             }

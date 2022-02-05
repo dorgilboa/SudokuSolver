@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 namespace SudokuSolver
 {
     public class Cell : IComparable
+        /*
+         * Includes all of the info for an empty cell - the index of it on the grid (row, col) and box, and a list of the
+         * possible values it might contain.
+         */
     {
         public int row { get; set; }
         public int col { get; set; }
@@ -16,6 +20,10 @@ namespace SudokuSolver
         
 
         public Cell(int row, int col, int sqrtn)
+            /*
+             * Constructor - initializes the cell by the row and col it's in. Initialize its options to the range
+             * 1 to the square root of the grid's size, so the other calculation algos will reduce them.
+             */
         {
             this.row = row;
             this.col = col;
@@ -27,21 +35,24 @@ namespace SudokuSolver
 
         //Copy Constractor:
         public Cell(Cell c)
+        /*
+         * Copy Constructor - initializes the cell by the given cell's row and col. Initialize its options as a
+         * copy of the given cell's options list.
+         */
         {
             this.row = c.row;
             this.col = c.col;
             this.box = c.box;
-            this.options = new ArrayList(/*(ArrayList)*/c.options/*.Clone()*/);
+            this.options = new ArrayList(c.options);
         }
 
         public int CompareTo(object obj)
+            /*
+             * Implementation of the IComperable to future-calculations that rely on a sorted collection, by the amount
+             * of options for each cell (from least to most).
+             */
         {
             Cell temp = (Cell)obj;
-            //if (this.options.Count != temp.options.Count)
-            //    return this.options.Count - temp.options.Count;
-            //else if (this.row != temp.row)
-            //    return this.row - temp.row;
-            //return this.col - temp.col;
             return this.options.Count - temp.options.Count;
         }
 
@@ -54,6 +65,7 @@ namespace SudokuSolver
         }
 
         public override bool Equals(object obj)
+            /* To compare between two cells in future-checks during the solving session. */
         {
             Cell temp;
             if (obj == null)
