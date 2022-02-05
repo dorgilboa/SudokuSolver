@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver
 {
-    class WrongDataLengthException : ValidationException
+    public class WrongDataLengthException : ValidationException
     {
         public WrongDataLengthException() : base("Length Exception. Has to have both square and triple root.")
         {

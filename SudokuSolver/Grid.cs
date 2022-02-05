@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver 
 {
-    enum AreaType { Row, Col, Box }
-    class Grid
+    public enum AreaType { Row, Col, Box }
+    public class Grid
+    /*
+     * Data holder for the board, has information on each empty cell arranged by rows, cols, boxes and a general list of
+     * all... Each object - (_emptyCells, _emptyRows, _emptyCols, _emptyBoxes) contains pointers to the empty cells that
+     * builds the grid, for a faster calculation and data-updating.
+     */
     {
         private readonly int n;
         public readonly int sqrtn;
@@ -24,13 +29,13 @@ namespace SudokuSolver
         private EmptyCellsArray _emptyCols;
         private EmptyCellsArray _emptyBoxes;
 
-        public int GetSqrtN()
-        {
-            return sqrtn;
-        }
 
         public Grid(string data)
         {
+            /*
+             * Normal Grid Constractor. Initialize the first grid in the solution proccess and sets each value on the grid
+             * according to the data string it recieves.
+             */
             n = data.Length;
             sqrtn = (int)Math.Sqrt(n);
             this.data = data;
@@ -52,6 +57,10 @@ namespace SudokuSolver
         //copy constractor
         public Grid(Grid g)
         {
+            /*
+             * Copy Grid Constractor. To duplicate each grid in the solution proccess and sets each value on the grid
+             * according to the parent-grid so it won't be shallow-copied.
+             */
             this.n = g.n;
             this.sqrtn = g.sqrtn;
             this.data = (string)g.data.Clone();
@@ -71,24 +80,6 @@ namespace SudokuSolver
             this.SortOptions();
         }
 
-        //public Cell GetFirstCell(List<Cell> emptycells)
-        //{
-        //    int min = sqrtn + 1;
-        //    Cell minCell = _emptyCells[0];
-        //    foreach (Cell cell in _emptyCells)
-        //    {
-        //        if (cell.options.Count == 1)
-        //            return cell;
-        //        if (cell.options.Count < min)
-        //        {
-        //            min = cell.options.Count;
-        //            minCell = cell;
-        //        }
-        //    }
-        //    return minCell;
-        //}
-
-
         public EmptyCellsArray GetEmptyRows()
         { return _emptyRows; }
 
@@ -100,12 +91,13 @@ namespace SudokuSolver
 
 
         public List<Cell> GetEmptyCells()
-        {
-            return _emptyCells;
-        }
+        { return _emptyCells; }
 
 
         public void DeleteEmptyCell(Cell c)
+            /*
+             * Gets a pointer to a cell c and removes it from each collection that points on it.
+             */
         {
             _emptyRows.DeleteCellFromIndex(c.row, c);
             _emptyCols.DeleteCellFromIndex(c.col, c);
@@ -115,6 +107,10 @@ namespace SudokuSolver
 
 
         public void InitOptions()
+        /*
+         * Runs on the grid's matrieces values and initializes empty-cells' values and options list according to the
+         * data on the grid.
+         */
         {
             for (int i = 0; i < sqrtn; i++)
             {
@@ -129,6 +125,10 @@ namespace SudokuSolver
 
 
         private void AddCellToOptions(int i, int j)
+            /*
+             * Gets an index on grid and creates a show of an empty cell, sets its options according
+             * to the matrix's values and adds it to the right collections that are supposed to point on it.
+             */
         {
             Cell temp = new Cell(i, j, sqrtn);
             GetRowMissing(i, temp.options);
@@ -142,6 +142,10 @@ namespace SudokuSolver
 
 
         public void GetRowMissing(int row, ArrayList options)
+            /*
+             * Removes from cell's options list that at the start contains all the values from 0-sqrtn
+             * the options that this specific cell can't be cause they were already in the same row.
+             */
         {
             for (int i = 0; i < sqrtn; i++)
                 if (options.Contains(grid[row, i]))
@@ -150,6 +154,10 @@ namespace SudokuSolver
 
 
         public void GetColMissing(int col, ArrayList options)
+        /*
+         * Removes from cell's options list that at the start contains all the values from 0-sqrtn
+         * the options that this specific cell can't be cause they were already in the same col.
+         */
         {
             for (int i = 0; i < sqrtn; i++)
                 if (options.Contains(grid[i, col]))
@@ -158,6 +166,10 @@ namespace SudokuSolver
 
 
         public void GetBoxMissing(int box, ArrayList options)
+        /*
+         * Removes from cell's options list that at the start contains all the values from 0-sqrtn
+         * the options that this specific cell can't be cause they were already in the same box.
+         */
         {
             int sqrtsqrtn = (int)Math.Sqrt(sqrtn);
             int startrow = box / sqrtsqrtn * sqrtsqrtn;
@@ -219,6 +231,9 @@ namespace SudokuSolver
         }
 
         private string[] BuildTemplateGridShow(int sqrtn, int sqrtsqrtn)
+            /*
+             * Builds the UI show on console for the grid.
+             */
         {
             string[] strings = { "\n", "\n", "\n", "\n", "\n" };
             for (int i = 0; i < sqrtn; i++)

@@ -6,22 +6,32 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver
 {
-    abstract class DataHandlerService
+    public abstract class DataHandlerService
     {
+        /*
+            An abstract class that contains data validation and input/output functions for sessions
+            against both console and file.
+            */
         public string start { get; set; }
         public string end { get; set; }
 
 
         public abstract void SetStartData();
 
-        public virtual void PassResult(Grid g, double time)
+        public virtual void PassResult(Grid g)
         {
-            Console.WriteLine($"Execution Time: {time} secs");
+            /*
+            Prints the final result on screen.
+             */
             Console.WriteLine(g);
         }
 
         public bool IsDataValid(Grid grid)
         {
+            /*
+            Responsible for running all data validations checks from this class on grid's values and print
+            (if needed) the right message.
+             */
             try
             {
                 return IsBoardValid(grid.grid, grid.sqrtn);
@@ -35,6 +45,10 @@ namespace SudokuSolver
 
         public bool IsBoardValid(int[,] grid, int length) 
         {
+            /*
+            Runs on the Grid and checks for values that might exceed from the range 0 to the square
+            root of the board's size. Also runs funcs to check for double values in rows / cols / boxes.
+             */
             for (int i = 0; i < length; i++)
             {
                 for (int j = 0; j < length; j++)
@@ -53,6 +67,10 @@ namespace SudokuSolver
 
         private bool IsRowValid(int[,] grid , int length, int row)
         {
+            /*
+            Runs on given row in a grid of values and checks with a counter array for
+            double values in the row.
+            */
             int[] monim = new int[length];
             for (int i = 0; i < length; i++)
                 if (grid[row, i] != 0 && ++monim[grid[row, i]-1] > 1)
@@ -63,6 +81,10 @@ namespace SudokuSolver
 
         private bool IsColValid(int[,] grid, int length, int col)
         {
+            /*
+            Runs on given col in a grid of values and checks with a counter array for
+            double values in the col.
+            */
             int[] monim = new int[length];
             for (int i = 0; i < length; i++)
                 if (grid[i,col] != 0 && ++monim[grid[i, col]-1] > 1)
@@ -73,6 +95,10 @@ namespace SudokuSolver
 
         private bool IsBoxValid(int[,] grid, int length, int box)
         {
+            /*
+            Runs on given box in a grid of values and checks with a counter array for
+            double values in the box.
+            */
             int sqrt = (int)Math.Sqrt(length);
             int startrow = box / sqrt * sqrt;
             int startcol = box % sqrt * sqrt;
@@ -87,9 +113,12 @@ namespace SudokuSolver
 
         public bool IsLengthValid()
         {
+            /*
+            Runs on the start data string and checks whether the length's third root is an integer.
+            */
             try
             {
-                if (!(Math.Truncate(Math.Sqrt(Math.Sqrt(start.Length))) == Math.Sqrt(Math.Sqrt(start.Length))))
+                if (start.Length == 0 || !(Math.Truncate(Math.Sqrt(Math.Sqrt(start.Length))) == Math.Sqrt(Math.Sqrt(start.Length))))
                     throw new WrongDataLengthException(String.Format("Length Exception. Has to have both square and triple root. The Length {0} is incorrect.", start.Length));
             }
             catch (WrongDataLengthException wdle)

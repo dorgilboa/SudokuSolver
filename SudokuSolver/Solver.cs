@@ -7,9 +7,19 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver
 {
-    static class Solver
+    public static class Solver
+        /*
+         * A static class that contains all the calculation-methods and computer-tactics in order to solve
+         * the sudoko grid in the most efficient way.
+         */
     {
         public static void InsertCellToGrid(Grid grid, Cell cell)
+            /*
+             * Sets the grid's values and empty-cells' options' values after inserting a given cell's first
+             * (and mostly only) option.
+             * runs 3 times - on the cells from the same row / col/ box and updates their options, then deletes
+             * the cell from all the lists.
+             */
         {
             int number = (int)cell.options[0];
             grid[cell.row, cell.col] = number;
@@ -27,6 +37,9 @@ namespace SudokuSolver
 
 
         public static void ReduceOptions(Grid grid)
+            /*
+             * Calls for all of the sudoku-solving algorithems i implemented.
+             */
         {
             HiddenSingle(grid, grid.sqrtn);
             Intersection(grid, grid.sqrtn);
@@ -36,6 +49,9 @@ namespace SudokuSolver
 
 
         public static void HiddenSingle(Grid g, int sqrtn)
+            /*
+             * Calls for the hidden-sigle algho on each row / col/ box in the grid.
+             */
         {
             for (int i = 0; i < sqrtn; i++)
             {
@@ -46,6 +62,11 @@ namespace SudokuSolver
         }
 
         private static void FindHiddenSingle(Grid g, int index, AreaType type)
+            /*
+             * Gets an index and area type in a grid (g), and checks for every option
+             * whether it includes in only one empty-cell inside the area on the given
+             * index. If it is, it sets this options as the only option in the matching cell.
+             */
         {
             ArrayList options = null;
             List<Cell> emptycells = null;
@@ -75,6 +96,9 @@ namespace SudokuSolver
 
 
         private static void Intersection(Grid g, int sqrtn)
+        /*
+         * Calls for the intersection algho on each row / col in the grid.
+         */
         {
             for (int i = 0; i < sqrtn; i++)
             {
@@ -85,6 +109,11 @@ namespace SudokuSolver
 
 
         private static void IntersectionByArea(Grid g, int index, AreaType type)
+        /*
+         * Gets an index and area type (row or col) in a grid (g), and checks for pairs/ thrplets of 
+         * every option in the same area type and box. if it found a pair or triplet, it removes this option
+         * from the rest of the area that is not inside the box.
+         */
         {
             ArrayList options = null;
             List<Cell> emptycells = null;
@@ -128,6 +157,10 @@ namespace SudokuSolver
 
 
         private static void RetrieveOptionsAndEmptyCells(Grid g, int index, AreaType type, ref ArrayList options, ref List<Cell> emptycells)
+        /*
+         * This function gets the grid, an index, area type (row / col / box) and sets the options and emptycells
+         * collections to the matching area-type in the given index.
+         */
         {
             switch (type)
             {
@@ -160,6 +193,9 @@ namespace SudokuSolver
 
 
         private static void HiddenPair(Grid g, int sqrtn)
+        /*
+         * Calls for the hidden-pair algho on each row / col/ box in the grid.
+         */
         {
             for (int i = 0; i < sqrtn; i++)
             {
@@ -171,6 +207,9 @@ namespace SudokuSolver
 
 
         private static void NakedPair(Grid g, int sqrtn)
+        /*
+         * Calls for the naked-pair algho on each row / col/ box in the grid.
+         */
         {
             for (int i = 0; i < sqrtn; i++)
             {
@@ -212,11 +251,11 @@ namespace SudokuSolver
                         if (cntr_pairs == 2 && cntr_shows == 4 && found_cell_one != null && found_cell_two != null)
                         {
                             found_cell_one.options = new ArrayList();
-                            found_cell_one.options.Add(options[i]);
                             found_cell_one.options.Add(options[j]);
+                            found_cell_one.options.Add(options[i]);
                             found_cell_two.options = new ArrayList();
-                            found_cell_two.options.Add(options[i]);
                             found_cell_two.options.Add(options[j]);
+                            found_cell_two.options.Add(options[i]);
                         }
                     }
                 }
@@ -271,14 +310,15 @@ namespace SudokuSolver
         }
 
 
-        public static double Solve(ref Grid g)
+        public static bool Solve(ref Grid g)
         {
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
-            GishushNasog(ref g);
+            bool succeeded = GishushNasog(ref g);
             watch.Stop();
-            return (double)watch.ElapsedMilliseconds / 1000;
-            //Console.WriteLine($"Execution Time: {(double)watch.ElapsedMilliseconds / 1000} secs");
+            //return (double)watch.ElapsedMilliseconds / 1000;
+            Console.WriteLine($"Execution Time: {(double)watch.ElapsedMilliseconds / 1000} secs");
+            return succeeded;
         }
 
 
@@ -290,9 +330,7 @@ namespace SudokuSolver
             if (emptycells.Count == 0)
                 return true;
             if (emptycells[0].options.Count == 0)
-            {
                 return false;
-            }
             else
             {
                 if (emptycells.Count > 0 && emptycells[0].options.Count > 1)
@@ -308,17 +346,15 @@ namespace SudokuSolver
                         ArrayList options = firstemptycell.options;
                         while (options.Count > 1 && !succeeded)
                         {
-                            //Console.WriteLine(firstemptycell);
-                            //Console.Clear();
-                            //Console.WriteLine(g);
                             InsertCellToGrid(dup, firstemptycell);
                             succeeded = GishushNasog(ref dup);
-                            if (!succeeded && options.Count > 0)
+                            if (!succeeded && options.Count > 1)
                             {
                                 dup = new Grid(g);
                                 firstemptycell = dup.GetEmptyCells()[0];
                                 options = firstemptycell.options;
                                 options.RemoveAt(0);
+                                g.GetEmptyCells()[0].options.RemoveAt(0);
                             }
                         }
                         if (succeeded)
@@ -337,6 +373,8 @@ namespace SudokuSolver
                     NakedSingle(g);
                 if (emptycells.Count == 0)
                     return true;
+                //else if (emptycells[0].options.Count == 0)
+                //    return false;
                 else
                     return GishushNasog(ref g);
             }

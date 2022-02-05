@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver
 {
-    class EmptyCellsArray
+    public class EmptyCellsArray
     {
         public int size { get; set; }
         private List<Cell>[] _cells;

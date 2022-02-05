@@ -8,18 +8,29 @@ using System.Windows.Forms;
 
 namespace SudokuSolver
 {
-    class FileDataHandlerService : DataHandlerService
+    public class FileDataHandlerService : DataHandlerService
     {
         public string path { get; set; }
 
 
         public FileDataHandlerService()
         {
+            /*
+            Constractor that is responsible for setting the start data by getting it from
+            a file.
+            */
             SetStartData();
+        }
+
+        public FileDataHandlerService(string data)
+        {
+            /* Constracor for tests */
+            start = data;
         }
 
         public override void SetStartData()
         {
+            /* This functions gets the data from the Read() function and sets it into start. */
             Console.WriteLine("\nEnter the FILE PATH Sudoku board DOWN HERE");
             try
             {
@@ -34,6 +45,8 @@ namespace SudokuSolver
 
         private string Read()
         {
+            /* This functions gets the data by opening the file with 
+             * OpenFileDialogForm() function and returns it.*/
             OpenFileDialogForm();
             if (!path.Contains(".txt"))
                 throw new WrongInputExceptions("File Type Exception. Only '.txt' can be operated on.");
@@ -52,6 +65,7 @@ namespace SudokuSolver
 
         private void OpenFileDialogForm()
         {
+            /* This functions opens the file with an OpenFileDialog object.*/
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = "c:\\";
             ofd.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
@@ -66,9 +80,12 @@ namespace SudokuSolver
         }
 
 
-        public override void PassResult(Grid g, double time)
+        public override void PassResult(Grid g)
         {
-            base.PassResult(g, time);
+            /*
+            Sends the final result back to the file it was in (with the starting data), and prints it on the Console. 
+             */
+            base.PassResult(g);
             SetEndData(g);
             string[] data = { start, end };
             try
@@ -87,6 +104,9 @@ namespace SudokuSolver
 
         private void SetEndData(Grid grid)
         {
+            /*
+            Builds the final result of the sudoku solver from int matrix back to a string in the given right format.
+             */
             end = "";
             foreach (int cell in grid.grid)
             {

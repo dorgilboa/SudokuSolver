@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver
 {
-    class ValidationException : Exception
+    public class ValidationException : Exception
     {
         public ValidationException() :  base ("Invalid input. Unknown Validation Exception.")
         {

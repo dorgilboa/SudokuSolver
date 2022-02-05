@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver
 {
-    class Cell : IComparable
+    public class Cell : IComparable
     {
         public int row { get; set; }
         public int col { get; set; }

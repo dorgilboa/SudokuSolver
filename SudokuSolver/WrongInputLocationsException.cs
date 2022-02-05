@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver
 {
-    class WrongInputLocationsException : WrongInputExceptions
+    public class WrongInputLocationsException : WrongInputExceptions
     {
         public WrongInputLocationsException() : base("Input's Location Exception: Two or more Cells CONTAIN THE SAME NUMBER in an Unknown Row / Col / Box.")
         {

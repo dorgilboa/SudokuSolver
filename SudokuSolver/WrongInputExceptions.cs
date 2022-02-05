@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver
 {
-    class WrongInputExceptions : ValidationException
+    public class WrongInputExceptions : ValidationException
     {
         public WrongInputExceptions() : base("Input Exception caused by an Unknown Reason.")
         {
